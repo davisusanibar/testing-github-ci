@@ -45,19 +45,19 @@ jobs:
           fi
           echo $PREFIX
           # archery crossbow download-artifacts -f java-jars -t binaries $PREFIX
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-2022-06-06-0-github-java-jars/arrow-java-root-9.0.0.dev174.pom
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-2022-06-06-0-github-java-jars/arrow-format-9.0.0.dev174.pom
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-2022-06-06-0-github-java-jars/arrow-format-9.0.0.dev174.jar
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-2022-06-06-0-github-java-jars/arrow-vector-9.0.0.dev174.pom
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-2022-06-06-0-github-java-jars/arrow-vector-9.0.0.dev174.jar
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-2022-06-06-0-github-java-jars/arrow-memory-9.0.0.dev174.pom
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-2022-06-06-0-github-java-jars/arrow-memory-core-9.0.0.dev174.pom
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-2022-06-06-0-github-java-jars/arrow-memory-netty-9.0.0.dev174.pom
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-2022-06-06-0-github-java-jars/arrow-memory-core-9.0.0.dev174.jar
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-2022-06-06-0-github-java-jars/arrow-memory-netty-9.0.0.dev174.jar
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-2022-06-06-0-github-java-jars/arrow-flight-9.0.0.dev174.pom
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-2022-06-06-0-github-java-jars/flight-core-9.0.0.dev174.pom
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-2022-06-06-0-github-java-jars/flight-core-9.0.0.dev174.jar
+          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/arrow-java-root-9.0.0.dev174.pom
+          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/arrow-format-9.0.0.dev174.pom
+          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/arrow-format-9.0.0.dev174.jar
+          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/arrow-vector-9.0.0.dev174.pom
+          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/arrow-vector-9.0.0.dev174.jar
+          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/arrow-memory-9.0.0.dev174.pom
+          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/arrow-memory-core-9.0.0.dev174.pom
+          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/arrow-memory-netty-9.0.0.dev174.pom
+          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/arrow-memory-core-9.0.0.dev174.jar
+          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/arrow-memory-netty-9.0.0.dev174.jar
+          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/arrow-flight-9.0.0.dev174.pom
+          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/flight-core-9.0.0.dev174.pom
+          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/flight-core-9.0.0.dev174.jar
           tree binaries
           if [ -n "$(ls -A binaries/*/*/)" ]; then
             echo "Found files!"
