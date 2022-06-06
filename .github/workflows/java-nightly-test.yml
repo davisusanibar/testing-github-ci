@@ -58,6 +58,8 @@ jobs:
           wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/arrow-flight-9.0.0.dev174.pom
           wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/flight-core-9.0.0.dev174.pom
           wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/flight-core-9.0.0.dev174.jar
+          mv *.pom binaries
+          mv *.jar binaries
           tree binaries
           if [ -n "$(ls -A binaries/*/*/)" ]; then
             echo "Found files!"
