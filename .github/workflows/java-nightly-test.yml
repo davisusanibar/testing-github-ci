@@ -1,4 +1,4 @@
-name: Upload R Nightly builds
+name: Upload Java Nightly builds
 
 on:
   workflow_dispatch:
