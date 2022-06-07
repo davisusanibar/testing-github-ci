@@ -83,6 +83,7 @@ jobs:
             PACKAGING="jar"
             CLASSIFIER=""
             GENERATEPOM=false
+            INSTALL=1
             if [[ ( ${BASH_REMATCH[0]} == *"$DEPENDENCY_TO_INSTALL"* ) ]];then
               if [ -f "$FILE" ]; then
                 FILE=$FILE
@@ -109,15 +110,18 @@ jobs:
                 GENERATEPOM=true
               else
                 echo "Please! Review $FILE, it was not intalled on m2 locally."
+                INSTALL=0
               fi
-              mvn install:install-file \
-                -Dfile=$FILE \
-                -DgroupId=org.apache.arrow \
-                -DartifactId=$ARTIFACTID \
-                -Dversion=$VERSION \
-                -Dpackaging=$PACKAGING \
-                -Dclassifier=$CLASSIFIER \
-                -DgeneratePom=$GENERATEPOM
+              if [[ $INSTALL =~ "1" ]]; then 
+                mvn install:install-file \
+                  -Dfile=$FILE \
+                  -DgroupId=org.apache.arrow \
+                  -DartifactId=$ARTIFACTID \
+                  -Dversion=$VERSION \
+                  -Dpackaging=$PACKAGING \
+                  -Dclassifier=$CLASSIFIER \
+                  -DgeneratePom=$GENERATEPOM
+              fi
             fi
             echo "Artifacts $FILE installed locally to ~/.m2/repository/org/apache/arrow"
           done
@@ -129,6 +133,7 @@ jobs:
           cp -r ~/.m2/repository/org/apache/arrow repo
           tree repo
           echo "Repo configured with Arrow Java artifacts ready to sync"
+
 
 
 
