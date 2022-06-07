@@ -59,13 +59,12 @@ jobs:
           if [ -z $DEPENDENCY_TO_INSTALL ]; then
             DEPENDENCY_TO_INSTALL=arrow
           fi
-          echo $PREFIX
           ARROW_JAVA_NIGHTLY_VERSION=$PREFIX'-github-java-jars'
           TMP_FOLDER=arrow_java_$(date +%Y-%m-%d)
           PATTERN_TO_GET_LIB_AND_VERSION='([a-z].+)-([0-9].[0-9].[0-9].dev[0-9]+).([a-z]+)'
           mkdir -p $TMP_FOLDER
           pushd $TMP_FOLDER
-          # this download artifacts should be execute thru crossbow (workaround to solve problem about rate limit using github3 without API_TOKEN)
+          # this download artifacts should be executed thru crossbow (workaround to solve problem about rate limit using github3 without API_TOKEN)
           echo "**************** 1 - Download $ARROW_JAVA_NIGHTLY_VERSION dependencies ****************"
           wget $( \
             wget \
@@ -75,44 +74,62 @@ jobs:
           echo "Downloaded: $(ls | wc -l) files"
           
           echo "**************** 2 - Install arrow java libraries to local repository ****************"
+          rm -rf ~/.m2/repository/org/apache/arrow
           for LIBRARY in $(ls | grep -E '.jar|.pom' | grep dev); do
             [[ $LIBRARY =~ $PATTERN_TO_GET_LIB_AND_VERSION ]]
             FILE=$PWD/${BASH_REMATCH[0]}
+            ARTIFACTID=${BASH_REMATCH[1]}
+            VERSION=${BASH_REMATCH[2]}
             PACKAGING="jar"
+            CLASSIFIER=""
+            GENERATEPOM=false
             if [[ ( ${BASH_REMATCH[0]} == *"$DEPENDENCY_TO_INSTALL"* ) ]];then
-              if [ -f "$FILE.jar" ]; then # Out of regex: -javadoc.jar / -sources.jar
+              if [ -f "$FILE" ]; then
+                FILE=$FILE
+                if [[ $FILE =~ ".pom" ]]; then
+                  FILE=$FILE
+                  PACKAGING="pom"
+                  GENERATEPOM=true
+                fi
+              elif [ -f "$FILE.jar" ]; then
                 FILE=$FILE.jar
+                if [[ $FILE =~ "sources.jar" ]]; then
+                  CLASSIFIER="sources"
+                  PACKAGING="java-source"
+                elif [[ $FILE =~ "javadoc.jar" ]]; then
+                  CLASSIFIER="javadoc"
+                  PACKAGING="javadoc"
+                elif [[ $FILE =~ "tests.jar" ]]; then
+                  CLASSIFIER="tests"
+                  PACKAGING="test-jar"
+                fi
               elif [ -f "$FILE.pom" ]; then
                 FILE=$FILE.pom
                 PACKAGING="pom"
+                GENERATEPOM=true
               else
-                if [ -f "$FILE-with-dependencies.jar" ]; then # Out of regex: -with-dependencies.jar
-                  FILE=$FILE-with-dependencies.jar
-                else 
-                  if [ -f "$FILE-format-flatbuffers.jar" ]; then # Out of regex: -shade-format-flatbuffers.jar
-                    FILE=$FILE-format-flatbuffers.jar
-                    else
-                      echo "Please! Review $FILE, it was not intalled on m2 locally."
-                    fi
-                fi
+                echo "Please! Review $FILE, it was not intalled on m2 locally."
               fi
-              rm -rf ~/.m2/repository/org/apache/arrow
               mvn install:install-file \
-                -Dfile="$FILE" \
+                -Dfile=$FILE \
                 -DgroupId=org.apache.arrow \
-                -DartifactId=${BASH_REMATCH[1]} \
-                -Dversion=${BASH_REMATCH[2]} \
-                -Dpackaging=$PACKAGING
+                -DartifactId=$ARTIFACTID \
+                -Dversion=$VERSION \
+                -Dpackaging=$PACKAGING \
+                -Dclassifier=$CLASSIFIER \
+                -DgeneratePom=$GENERATEPOM
             fi
-            echo "Artifacts installed locally to ~/.m2/repository/org/apache/arrow"
+            echo "Artifacts $FILE installed locally to ~/.m2/repository/org/apache/arrow"
           done
           popd
 
           echo "**************** 3 - Local repository to sync ****************"
+          rm -rf repo
           mkdir repo
           cp -r ~/.m2/repository/org/apache/arrow repo
           tree repo
           echo "Repo configured with Arrow Java artifacts ready to sync"
+
 
 
           
