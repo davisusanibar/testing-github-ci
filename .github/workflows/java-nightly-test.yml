@@ -141,7 +141,7 @@ jobs:
           echo "**************** 3 - Local repository to sync ****************"
           rm -rf repo
           mkdir repo
-          if [ -f "~/.m2/repository/org/apache/arrow" ]; then
+          if [ -d "~/.m2/repository/org/apache/arrow" ]; then
             cp -r ~/.m2/repository/org/apache/arrow repo
           fi
           echo "Repo configured with Arrow Java artifacts ready to sync"
