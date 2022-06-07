@@ -66,26 +66,28 @@ jobs:
           if [ -z $PREFIX ]; then
             PREFIX=$(date +%Y-%m-%d)
           fi
-          # problem about rate limit using github3 without API_TOKEN
-          archery crossbow download-artifacts -f java-jars -t arrow_java_$(date +"%d-%m-%Y") nightly-packaging-$PREFIX-0
-          if [ -n "$(ls -A arrow_java_$PREFIX/*)" ]; then
+          TMP_FOLDER=arrow_java_$PREFIX
+          mkdir -p $TMP_FOLDER
+          archery crossbow download-artifacts -f java-jars -t $TMP_FOLDER nightly-packaging-$PREFIX-0
+          if [ -n "$(ls -A $TMP_FOLDER/*)" ]; then
             echo "Found files!"
             echo "GOT_FILES=true" >> $GITHUB_ENV
           else
             echo "No files found. Stopping upload."
             echo "GOT_FILES=false" >> $GITHUB_ENV
           fi
-          tree arrow_java_$(date +"%d-%m-%Y")
+          tree $TMP_FOLDER
       - shell: bash
         if: env.GOT_FILES == 'true'
         name: Build Repository
         run: |
+          if [ -z $PREFIX ]; then
+            PREFIX=$(date +%Y-%m-%d)
+          fi
           TMP_FOLDER=arrow_java_$PREFIX
           PATTERN_TO_GET_LIB_AND_VERSION='([a-z].+)-([0-9].[0-9].[0-9].dev[0-9]+).([a-z]+)'
-          mkdir -p $TMP_FOLDER
-          pushd $TMP_FOLDER
-
           echo "**************** 2 - Install arrow java libraries to local repository ****************"
+          pushd $TMP_FOLDER
           rm -rf ~/.m2/repository/org/apache/arrow
           for LIBRARY in $(ls | grep -E '.jar|.pom' | grep dev); do
             [[ $LIBRARY =~ $PATTERN_TO_GET_LIB_AND_VERSION ]]
@@ -141,12 +143,13 @@ jobs:
           echo "**************** 3 - Local repository to sync ****************"
           rm -rf repo
           mkdir repo
-          cp -r ~/.m2/repository/org/apache/arrow repo
-          tree repo
+          if [ -f "~/.m2/repository/org/apache/arrow" ]; then
+            cp -r ~/.m2/repository/org/apache/arrow repo
+          fi
           echo "Repo configured with Arrow Java artifacts ready to sync"
       - name: Show repo contents
         if: env.GOT_FILES == 'true'
-        run: ls -R repo
+        run: tree repo
       - name: Upload Files
         if: env.GOT_FILES == 'true'
         uses: burnett01/rsync-deployments@5.2
