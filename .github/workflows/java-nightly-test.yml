@@ -6,7 +6,7 @@ on:
       prefix:
         description: Job prefix to use.
         required: false
-        default: '',
+        default: ''
       dependency_to_install:
         description: In case need to upload custom artifact to nightly repository (i.e: memory / flight / others).
         required: false
