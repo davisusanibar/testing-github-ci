@@ -66,15 +66,15 @@ jobs:
           if [ -z $PREFIX ]; then
             PREFIX=$(date +%Y-%m-%d)
           fi
-          archery crossbow download-artifacts -f java-jars nightly-packaging-$PREFIX-0
-          if [ -n "$(ls -A nightly-packaging-$PREFIX-0/*/*/)" ]; then
+          archery crossbow download-artifacts -f java-jars -t binaries nightly-packaging-$PREFIX-0
+          if [ -n "$(ls -A binaries/*/*/)" ]; then
             echo "Found files!"
             echo "GOT_FILES=true" >> $GITHUB_ENV
           else
             echo "No files found. Stopping upload."
             echo "GOT_FILES=false" >> $GITHUB_ENV
           fi
-          tree $TMP_FOLDER
+          tree binaries
       - shell: bash
         if: env.GOT_FILES == 'true'
         name: Build Repository
@@ -84,7 +84,7 @@ jobs:
           fi
           PATTERN_TO_GET_LIB_AND_VERSION='([a-z].+)-([0-9].[0-9].[0-9].dev[0-9]+).([a-z]+)'
           echo "**************** 2 - Install arrow java libraries to local repository ****************"
-          pushd nightly-packaging-$PREFIX-0/java-jars
+          pushd binaries/nightly-packaging-$PREFIX-0/java-jars
           rm -rf ~/.m2/repository/org/apache/arrow
           tree .
           for LIBRARY in $(ls | grep -E '.jar|.pom' | grep dev); do
