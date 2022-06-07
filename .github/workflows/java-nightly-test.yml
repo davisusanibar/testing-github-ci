@@ -83,10 +83,8 @@ jobs:
             PREFIX=$(date +%Y-%m-%d)
           fi
           PATTERN_TO_GET_LIB_AND_VERSION='([a-z].+)-([0-9].[0-9].[0-9].dev[0-9]+).([a-z]+)'
-          echo "**************** 2 - Install arrow java libraries to local repository ****************"
           pushd binaries/nightly-packaging-$PREFIX-0/java-jars
           rm -rf ~/.m2/repository/org/apache/arrow
-          tree .
           for LIBRARY in $(ls | grep -E '.jar|.pom' | grep dev); do
             [[ $LIBRARY =~ $PATTERN_TO_GET_LIB_AND_VERSION ]]
             FILE=$PWD/${BASH_REMATCH[0]}
@@ -138,17 +136,11 @@ jobs:
             echo "Artifacts $FILE installed locally to ~/.m2/repository/org/apache/arrow"
           done
           popd
-          echo "**************** 3 - Local repository to sync ****************"
           rm -rf repo
-          mkdir repo
-          pwd
-          tree ~/.m2/repository/org/apache/arrow
-          ls -latr ~/.m2/repository/org/apache/arrow
+          mkdir -p repo/org/apache/arrow
           if [ -d "$HOME/.m2/repository/org/apache/arrow" ]; then
-            echo "entro"
-            cp -r ~/.m2/repository/ repo
+            cp -r ~/.m2/repository/org/apache/arrow/ repo/org/apache/arrow/
           fi
-          tree repo
           echo "Repo configured with Arrow Java artifacts ready to sync"
       - name: Show repo contents
         if: env.GOT_FILES == 'true'
