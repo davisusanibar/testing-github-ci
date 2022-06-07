@@ -87,7 +87,7 @@ jobs:
           TMP_FOLDER=arrow_java_$PREFIX
           PATTERN_TO_GET_LIB_AND_VERSION='([a-z].+)-([0-9].[0-9].[0-9].dev[0-9]+).([a-z]+)'
           echo "**************** 2 - Install arrow java libraries to local repository ****************"
-          pushd $TMP_FOLDER
+          pushd $TMP_FOLDER/nightly-packaging-$PREFIX-0
           rm -rf ~/.m2/repository/org/apache/arrow
           tree .
           for LIBRARY in $(ls | grep -E '.jar|.pom' | grep dev); do
