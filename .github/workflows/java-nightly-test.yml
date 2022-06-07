@@ -8,7 +8,7 @@ on:
         required: false
         default: ''
       dependency_to_install:
-        description: In case need to upload custom artifact to nightly repository (i.e: memory / flight / others).
+        description: In case need to upload custom artifact to nightly repository (i.e memory / flight / others).
         required: false
         default: 'arrow'
 
