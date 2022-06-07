@@ -139,7 +139,7 @@ jobs:
           rm -rf repo
           mkdir -p repo/org/apache/arrow
           if [ -d "$HOME/.m2/repository/org/apache/arrow" ]; then
-            cp -r ~/.m2/repository/org/apache/arrow/ repo/org/apache/arrow/
+            cp -r ~/.m2/repository/org/apache/arrow/ repo/org/apache/arrow
           fi
           echo "Repo configured with Arrow Java artifacts ready to sync"
       - name: Show repo contents
