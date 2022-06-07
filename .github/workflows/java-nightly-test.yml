@@ -35,6 +35,7 @@ jobs:
     env:
       PREFIX: ${{ github.event.inputs.prefix || ''}}
       DEPENDENCY_TO_INSTALL: ${{ github.event.inputs.dependency_to_install || ''}}
+      CROSSBOW_GITHUB_TOKEN: ${{ github.token }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Arrow
@@ -66,7 +67,7 @@ jobs:
             PREFIX=nightly-packaging-$(date +%Y-%m-%d)-0
           fi
           # problem about rate limit using github3 without API_TOKEN
-          archery crossbow download-artifacts -f java-jars -t arrow_java_$(date +"%d-%m-%Y") -t ${{ github.token }} $PREFIX
+          archery crossbow download-artifacts -f java-jars -t arrow_java_$(date +"%d-%m-%Y") $PREFIX
           if [ -n "$(ls -A arrow_java_$(date +"%d-%m-%Y")/*)" ]; then
             echo "Found files!"
             echo "GOT_FILES=true" >> $GITHUB_ENV
