@@ -69,7 +69,7 @@ jobs:
           echo "**************** 1 - Download $ARROW_JAVA_NIGHTLY_VERSION dependencies ****************"
           wget $( \
           	wget \
-          		-qO- https://api.github.com/repos/ursacomputing/crossbow/releases/tags/$ARROW_JAVA_NIGHTLY_VERSION \
+          		-qO- "https://api.github.com/repos/ursacomputing/crossbow/releases/tags/$ARROW_JAVA_NIGHTLY_VERSION" \
           		| jq -r '.assets[] | select((.name | endswith(".pom")) or (.name | endswith(".jar"))) | .browser_download_url' \
           		| grep $DEPENDENCY_TO_INSTALL )
           echo "Downloaded: $(ls | wc -l) files"
