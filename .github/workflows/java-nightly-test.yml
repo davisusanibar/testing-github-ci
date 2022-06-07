@@ -72,6 +72,7 @@ jobs:
           		-qO- https://api.github.com/repos/ursacomputing/crossbow/releases/tags/$ARROW_JAVA_NIGHTLY_VERSION \
           		| jq -r '.assets[] | select((.name | endswith(".pom")) or (.name | endswith(".jar"))) | .browser_download_url' \
           		| grep $DEPENDENCY_TO_INSTALL )
+          echo "Downloaded: $(ls $TMP_FOLDER | wc -l) files"
           echo "**************** 2 - Install arrow java libraries to local repository ****************"
           for LIBRARY in $(ls | grep -E '.jar|.pom' | grep dev); do
             [[ $LIBRARY =~ $PATTERN_TO_GET_LIB_AND_VERSION ]]
