@@ -144,7 +144,7 @@ jobs:
           pwd
           tree ~/.m2/repository/org/apache/arrow
           ls -latr ~/.m2/repository/org/apache/arrow
-          if [ -d "~/.m2/repository/org/apache/arrow" ]; then
+          if [ -d "$HOME/.m2/repository/org/apache/arrow" ]; then
             echo "entro"
             cp -r ~/.m2/repository/ repo
           fi
