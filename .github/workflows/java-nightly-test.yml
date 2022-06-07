@@ -55,7 +55,7 @@ jobs:
           if [ -z $PREFIX ]; then
             PREFIX=nightly-packaging-$(date +%Y-%m-%d)-0
           fi
-          ARROW_JAVA_NIGHTLY_VERSION=$PREFIX-github-java-jars'
+          ARROW_JAVA_NIGHTLY_VERSION='$PREFIX-github-java-jars'
           TMP_FOLDER=arrow_java_$(date +"%d-%m-%Y")
           PATTERN_TO_GET_LIB_AND_VERSION='([a-z].+)-([0-9].[0-9].[0-9].dev[0-9]+).([a-z]+)'
           mkdir -p $TMP_FOLDER
