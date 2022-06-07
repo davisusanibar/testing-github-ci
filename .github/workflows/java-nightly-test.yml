@@ -134,12 +134,13 @@ jobs:
               fi
             fi
             echo "Artifacts $FILE installed locally to ~/.m2/repository/org/apache/arrow"
+            tree ~/.m2/repository/org/apache/arrow
           done
           popd
           rm -rf repo
-          mkdir -p repo/org/apache/arrow
+          mkdir -p repo/org/apache
           if [ -d "$HOME/.m2/repository/org/apache/arrow" ]; then
-            cp -r ~/.m2/repository/org/apache/arrow/ repo/org/apache/arrow
+            cp -r ~/.m2/repository/org/apache/arrow repo/org/apache
           fi
           echo "Repo configured with Arrow Java artifacts ready to sync"
       - name: Show repo contents
