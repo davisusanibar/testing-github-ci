@@ -16,6 +16,7 @@ jobs:
   upload:
     env:
       PREFIX: ${{ github.event.inputs.prefix || ''}}
+      DEPENDENCY_TO_INSTALL: ${{ github.event.inputs.dependency_to_install || ''}}
     runs-on: ubuntu-latest
     steps:
 #       - name: Checkout Arrow
@@ -55,7 +56,11 @@ jobs:
           if [ -z $PREFIX ]; then
             PREFIX=nightly-packaging-$(date +%Y-%m-%d)-0
           fi
-          ARROW_JAVA_NIGHTLY_VERSION='$PREFIX-github-java-jars'
+          if [ -z $DEPENDENCY_TO_INSTALL ]; then
+            DEPENDENCY_TO_INSTALL=arrow
+          fi
+          echo $PREFIX
+          ARROW_JAVA_NIGHTLY_VERSION=$PREFIX'-github-java-jars'
           TMP_FOLDER=arrow_java_$(date +"%d-%m-%Y")
           PATTERN_TO_GET_LIB_AND_VERSION='([a-z].+)-([0-9].[0-9].[0-9].dev[0-9]+).([a-z]+)'
           mkdir -p $TMP_FOLDER
@@ -67,7 +72,6 @@ jobs:
           		-qO- https://api.github.com/repos/ursacomputing/crossbow/releases/tags/$ARROW_JAVA_NIGHTLY_VERSION \
           		| jq -r '.assets[] | select((.name | endswith(".pom")) or (.name | endswith(".jar"))) | .browser_download_url' \
           		| grep $DEPENDENCY_TO_INSTALL )
-
           echo "**************** 2 - Install arrow java libraries to local repository ****************"
           for LIBRARY in $(ls | grep -E '.jar|.pom' | grep dev); do
             [[ $LIBRARY =~ $PATTERN_TO_GET_LIB_AND_VERSION ]]
