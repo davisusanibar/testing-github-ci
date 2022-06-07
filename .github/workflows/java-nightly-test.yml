@@ -71,7 +71,7 @@ jobs:
               "-qO-" "https://api.github.com/repos/ursacomputing/crossbow/releases/tags/$ARROW_JAVA_NIGHTLY_VERSION" \
               | jq -r '.assets[] | select((.name | endswith(".pom")) or (.name | endswith(".jar"))) | .browser_download_url' \
               | grep $DEPENDENCY_TO_INSTALL )
-          if [ -n "$(ls -A $TMP_FOLDER/*/)" ]; then
+          if [ -n "$(ls -A $TMP_FOLDER/*)" ]; then
             echo "Found files!"
             echo "GOT_FILES=true" >> $GITHUB_ENV
           else
