@@ -53,6 +53,7 @@ jobs:
 #           tree arrow_java_$(date +"%d-%m-%Y")
       - shell: bash
         run: |
+          echo "$(jq --version)"
           if [ -z $PREFIX ]; then
             PREFIX=nightly-packaging-$(date +%Y-%m-%d)-0
           fi
