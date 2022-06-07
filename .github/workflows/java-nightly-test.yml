@@ -67,7 +67,8 @@ jobs:
           pushd $TMP_FOLDER
           # this download artifacts should be execute thru crossbow (workaround to solve problem about rate limit using github3 without API_TOKEN)
           echo "**************** 1 - Download $ARROW_JAVA_NIGHTLY_VERSION dependencies ****************"
-          wget https://api.github.com/repos/ursacomputing/crossbow/releases/tags/$ARROW_JAVA_NIGHTLY_VERSION
+          echo "probar -qo-"
+          wget -qO- https://github.com/ursacomputing/crossbow/releases/download/nightly-2022-03-19-0-github-java-jars/arrow-algorithm-8.0.0.dev254.jar
           echo "paso!"
           wget $( \
           	wget \
