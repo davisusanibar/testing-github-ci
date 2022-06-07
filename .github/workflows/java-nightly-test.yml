@@ -6,7 +6,11 @@ on:
       prefix:
         description: Job prefix to use.
         required: false
-        default: ''
+        default: '',
+      dependency_to_install:
+        description: In case need to upload custom artifact to nightly repository (i.e: memory / flight / others).
+        required: false
+        default: 'arrow'
 
 jobs:
   upload:
@@ -37,58 +41,32 @@ jobs:
 #       - name: Install Archery
 #         shell: bash
 #         run: pip install -e arrow/dev/archery[all]
-      - run: mkdir -p binaries
-      - name: Download Artifacts
+#       - run: mkdir -p arrow_java_$(date +"%d-%m-%Y")
+#       - name: Download Artifacts
+#         run: |
+#           if [ -z $PREFIX ]; then
+#             PREFIX=nightly-packaging-$(date +%Y-%m-%d)-0
+#           fi
+#           echo $PREFIX
+#           archery crossbow download-artifacts -f java-jars -t arrow_java_$(date +"%d-%m-%Y") $PREFIX
+#           tree arrow_java_$(date +"%d-%m-%Y")
+      - shell: bash
         run: |
           if [ -z $PREFIX ]; then
             PREFIX=nightly-packaging-$(date +%Y-%m-%d)-0
           fi
-          echo $PREFIX
-          # archery crossbow download-artifacts -f java-jars -t binaries $PREFIX
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/arrow-java-root-9.0.0.dev174.pom
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/arrow-format-9.0.0.dev174.pom
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/arrow-format-9.0.0.dev174.jar
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/arrow-vector-9.0.0.dev174.pom
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/arrow-vector-9.0.0.dev174.jar
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/arrow-memory-9.0.0.dev174.pom
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/arrow-memory-core-9.0.0.dev174.pom
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/arrow-memory-netty-9.0.0.dev174.pom
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/arrow-memory-core-9.0.0.dev174.jar
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/arrow-memory-netty-9.0.0.dev174.jar
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/arrow-flight-9.0.0.dev174.pom
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/flight-core-9.0.0.dev174.pom
-          wget https://github.com/ursacomputing/crossbow/releases/download/nightly-packaging-2022-06-06-0-github-java-jars/flight-core-9.0.0.dev174.jar
-          mv *.pom binaries
-          mv *.jar binaries
-          tree binaries
-          if [ -n "$(ls -A binaries/*/)" ]; then
-            echo "Found files!"
-            echo "GOT_FILES=true" >> $GITHUB_ENV
-          else
-            echo "No files found. Stopping upload."
-            echo "GOT_FILES=false" >> $GITHUB_ENV
-          fi
-      - run: mkdir -p binaries
-      - shell: bash
-        run: |
-          # Shell variables
-          ARROW_JAVA_NIGHTLY_VERSION=${1:-'nightly-2022-03-03-0-github-java-jars'}
-          DEPENDENCY_TO_INSTALL=${2:-'arrow'}
-
-          # Local Variables
+          ARROW_JAVA_NIGHTLY_VERSION=$PREFIX-github-java-jars'
           TMP_FOLDER=arrow_java_$(date +"%d-%m-%Y")
           PATTERN_TO_GET_LIB_AND_VERSION='([a-z].+)-([0-9].[0-9].[0-9].dev[0-9]+).([a-z]+)'
-
-          # Aplication logic
-          echo $DEPENDENCY_TO_INSTALL
           mkdir -p $TMP_FOLDER
           pushd $TMP_FOLDER
-          echo "**************** 1 - Download arrow-java $1 dependencies ****************"
-          # wget $( \
-          # 	wget \
-          # 		-qO- https://api.github.com/repos/ursacomputing/crossbow/releases/tags/$ARROW_JAVA_NIGHTLY_VERSION \
-          # 		| jq -r '.assets[] | select((.name | endswith(".pom")) or (.name | endswith(".jar"))) | .browser_download_url' \
-          # 		| grep $DEPENDENCY_TO_INSTALL )
+          # this download artifacts should be execute thru crossbow (workaround to solve problem about rate limit using github3 without API_TOKEN)
+          echo "**************** 1 - Download $ARROW_JAVA_NIGHTLY_VERSION dependencies ****************"
+          wget $( \
+          	wget \
+          		-qO- https://api.github.com/repos/ursacomputing/crossbow/releases/tags/$ARROW_JAVA_NIGHTLY_VERSION \
+          		| jq -r '.assets[] | select((.name | endswith(".pom")) or (.name | endswith(".jar"))) | .browser_download_url' \
+          		| grep $DEPENDENCY_TO_INSTALL )
 
           echo "**************** 2 - Install arrow java libraries to local repository ****************"
           for LIBRARY in $(ls | grep -E '.jar|.pom' | grep dev); do
