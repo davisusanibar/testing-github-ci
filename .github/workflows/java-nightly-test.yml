@@ -24,17 +24,12 @@ on:
         description: Job prefix to use.
         required: false
         default: ''
-      dependency_to_install:
-        description: In case need to upload custom artifact to nightly repository (i.e memory / flight / others).
-        required: false
-        default: 'arrow'
   schedule:
     - cron: '0 14 * * *'
 jobs:
   upload:
     env:
       PREFIX: ${{ github.event.inputs.prefix || ''}}
-      DEPENDENCY_TO_INSTALL: ${{ github.event.inputs.dependency_to_install || ''}}
       CROSSBOW_GITHUB_TOKEN: ${{ github.token }}
     runs-on: ubuntu-latest
     steps:
