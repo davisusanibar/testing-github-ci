@@ -83,7 +83,6 @@ jobs:
             cp binaries/$PREFIX/java-jars/$LIBRARY repo/org/apache/arrow/${BASH_REMATCH[1]}/${BASH_REMATCH[2]}
             echo "Artifacts $LIBRARY configured"
           done
-          popd
       - name: Show repo contents
         run: tree repo
       - name: Upload Files
